@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, AlarmReceiver::class.java).apply {
             action = "com.eagletech.happyclock.ACTION_STOP_ALARM"
         }
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         sendBroadcast(intent)
 
         // Stop foreground service

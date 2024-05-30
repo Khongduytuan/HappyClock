@@ -80,7 +80,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_alarm)
-            .setContentTitle("Alarm is ringing")
+            .setContentTitle("Alarm is ringing!!!")
             .setContentText("Tap to stop the alarm")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .addAction(R.drawable.ic_stop, "Stop", stopPendingIntent)
