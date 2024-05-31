@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <queries>
         <package android:name="com.amazon.venezia" />
         <package android:name="com.amazon.sdktestclient" />
@@ -23,10 +24,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HappyClock"
         tools:targetApi="31">
+        <activity
+            android:name=".BankActivity"
+            android:exported="false" />
+
         <receiver
             android:name="com.amazon.device.iap.ResponseReceiver"
             android:exported="true"
-            android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY" >
+            android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY">
             <intent-filter>
                 <action android:name="com.amazon.inapp.purchasing.NOTIFY" />
             </intent-filter>
@@ -38,6 +43,7 @@
                 <action android:name="com.eagletech.happyclock.ACTION_STOP_ALARM" />
             </intent-filter>
         </receiver>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -47,6 +53,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".service.AlarmService"
             android:exported="false" />

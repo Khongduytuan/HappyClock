@@ -8,6 +8,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.eagletech.happyclock.dataUser.ManagerData
 import com.eagletech.happyclock.databinding.ActivityMainBinding
 import com.eagletech.happyclock.receiver.AlarmReceiver
 import com.eagletech.happyclock.service.AlarmService
@@ -16,25 +18,68 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var myData: ManagerData
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        myData = ManagerData.getInstance(this)
 
         binding.setAlarmButton.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                calendar.set(Calendar.HOUR_OF_DAY, binding.timePicker.hour)
-                calendar.set(Calendar.MINUTE, binding.timePicker.minute)
-            } else {
-                calendar.set(Calendar.HOUR_OF_DAY, binding.timePicker.currentHour)
-                calendar.set(Calendar.MINUTE, binding.timePicker.currentMinute)
-            }
-            calendar.set(Calendar.SECOND, 0)
+//            val calendar = Calendar.getInstance()
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+//                calendar.set(Calendar.HOUR_OF_DAY, binding.timePicker.hour)
+//                calendar.set(Calendar.MINUTE, binding.timePicker.minute)
+//            } else {
+//                calendar.set(Calendar.HOUR_OF_DAY, binding.timePicker.currentHour)
+//                calendar.set(Calendar.MINUTE, binding.timePicker.currentMinute)
+//            }
+//            calendar.set(Calendar.SECOND, 0)
+//
+//            setAlarm(calendar.timeInMillis)
 
-            setAlarm(calendar.timeInMillis)
+            if (myData.isPremium == true){
+                val calendar = Calendar.getInstance()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    calendar.set(Calendar.HOUR_OF_DAY, binding.timePicker.hour)
+                    calendar.set(Calendar.MINUTE, binding.timePicker.minute)
+                } else {
+                    calendar.set(Calendar.HOUR_OF_DAY, binding.timePicker.currentHour)
+                    calendar.set(Calendar.MINUTE, binding.timePicker.currentMinute)
+                }
+                calendar.set(Calendar.SECOND, 0)
+
+                setAlarm(calendar.timeInMillis)
+            } else if (myData.getData() > 0){
+                val calendar = Calendar.getInstance()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    calendar.set(Calendar.HOUR_OF_DAY, binding.timePicker.hour)
+                    calendar.set(Calendar.MINUTE, binding.timePicker.minute)
+                } else {
+                    calendar.set(Calendar.HOUR_OF_DAY, binding.timePicker.currentHour)
+                    calendar.set(Calendar.MINUTE, binding.timePicker.currentMinute)
+                }
+                calendar.set(Calendar.SECOND, 0)
+
+                setAlarm(calendar.timeInMillis)
+                myData.removeData()
+            }
+            else{
+                Toast.makeText(this, "You must buy it to continue use...", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, BankActivity::class.java)
+                startActivity(intent)
+            }
+
+        }
+
+        binding.toolBar.iconBuy.setOnClickListener {
+            val intent = Intent(this, BankActivity::class.java)
+            startActivity(intent)
+        }
+        binding.toolBar.iconInfo.setOnClickListener {
+            showInfoDialog()
         }
 
         binding.stopButton.setOnClickListener {
@@ -42,6 +87,20 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Alarm stopped!", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun showInfoDialog() {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Infor")
+            .setPositiveButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .create()
+        if (myData.isPremium == true){
+            dialog.setMessage("You have successfully registered")
+        }else{
+            dialog.setMessage("You have ${myData.getData()} use")
+        }
+        dialog.show()
+    }
+
 
     private fun setAlarm(timeInMillis: Long) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
